@@ -1,0 +1,37 @@
+<?page title="Prestations" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window title="Prestations" border="normal" hflex="1" vflex="1"
+		closable="true" apply="">
+		<vbox hflex="1" vflex="1" align="center">
+		<hbox>
+			<groupbox >
+				<caption label="Prestations"></caption>
+				<radiogroup id="radioGroup" />
+				<grid>
+					<columns>
+						<column />
+						<column />
+					</columns>
+					<rows>
+						<row>
+							Libelle :
+							<textbox id="txtLibelle"/>
+						</row>
+						<row>
+							Montant :
+							<doublebox id="txtMontant"/>
+						</row>
+
+						
+					</rows>
+
+				</grid>
+				<button label="Ajouter" id="btnajouter"></button>
+			</groupbox>
+
+
+
+		</hbox>
+		</vbox>
+	</window>
+</zk>

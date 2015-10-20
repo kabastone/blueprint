@@ -1,0 +1,12 @@
+<?page title="rapport" contentType="text/html;charset=UTF-8"?>
+<zk>
+	<window title="rapport" border="normal" width="800px" height="600px"
+		closable="true" mode="modal" apply="sn.maadji.healthcare.web.report.ReportControl">
+<jasperreport id=" report " height="600px" />
+	<hlayout>
+		Export Report to
+		<button label="PDF" forward='onShowReport(pdf)' />
+		<button label="RTF" forward='onShowReport(rtf)' />
+	</hlayout>
+	</window>
+</zk>

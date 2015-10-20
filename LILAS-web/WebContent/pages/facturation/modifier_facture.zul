@@ -1,0 +1,72 @@
+<?page title="Modifier facture" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window title="Modifier facture" border="normal" closable="true" apply="sn.maadji.healthcare.web.facturation.ModifierFactureControl">
+<vbox hflex="1" vflex="1" align="center">
+		<hbox hflex="1" vflex="1" align="left"><label>SOLDE</label> <label id="llSolde" sclass="label label-info" /></hbox>
+		<vbox>
+		<groupbox hflex="1" >
+			<caption label="Pestation"></caption>
+			<hbox hflex="1" vflex="1">
+
+				<combobox id="cbPrestation" placeholder="Prestation">
+					<template name="model">
+					<comboitem label="${each.libelle }" value="${each}" />
+					</template>
+				<!-- <comboitem label="Hospitalisation Domicile" />
+					<comboitem label="Consultation Specialise" />
+					<comboitem label="Consultation Simple" />
+					<comboitem label="Soins" />
+					<comboitem label="Transport Ambulatoire" />
+					<comboitem label="Pose Perfusion" />-->
+				</combobox>
+
+
+				<doublebox id="dbMontant" constraint="no empty"
+					placeholder="Montant" />
+
+
+				<button id="btAddPrestation" image="/images/add.png"></button>
+				<listbox id="lsPrestation" width="300px" height="200px">
+					<listhead>
+						<listheader label="Prestation" />
+						<listheader label="Montant" />
+					</listhead>
+				</listbox>
+				<button id="btSupPrestation" type="submit" image="/images/delete.png" />
+			</hbox>
+		</groupbox>
+		<groupbox >
+			<caption label="Réglement" />
+			<hbox hflex="1" vflex="1">
+				<textbox id="txtObservation" placeholder="Observation" />
+				<datebox placeholder="Date réglement" id="dtReglement" />
+				<doublebox id="txtMontant" placeholder="Montant"/>
+				<button image="/images/add.png" id="btAddRegl" />
+				
+				<listbox id="lsReglement" width="300px" height="200px">
+				
+					<listhead>
+						<listheader label="Observation" />
+						<listheader label="Date réglement" />
+						<listheader label="Montant" />
+					</listhead>
+				</listbox>
+				<button id="btSuppRegl" image="/images/delete.png" />
+			</hbox>
+		</groupbox>
+		</vbox>
+		<combobox id="cbModePaie" placeholder="Mode paiement"
+			 selectedItem="${win$composer.selectedMode}">
+			<comboitem label="PAF" />
+			<comboitem label="Paiement différé" />
+			<comboitem label="Lettre de garantie" />
+			<comboitem label="Plan SESAME IPRES" />
+			<comboitem label="Plan SESAME National" />
+			<comboitem label="Gratuité" />
+			<comboitem label="ASAPA" />
+		</combobox>
+		<button id="btValider">Valider</button>
+		</vbox>
+	</window>
+
+</zk>
