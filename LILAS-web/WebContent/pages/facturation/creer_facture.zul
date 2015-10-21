@@ -1,10 +1,7 @@
 <?page title="Facture" contentType="text/html;charset=UTF-8"?>
 <zk>
 	<window title="Facture" border="normal" closable="true" 
-		
-		apply="
-		" width="70%">
-		
+		apply="lilas.web.facturation.AjouterFactureControl" width="70%">
 		<vbox hflex="1" vflex="1" align="center">
 		<groupbox width="90%">
 			<caption label="Infos Client"></caption>
@@ -56,12 +53,8 @@
 					</template>
 				
 				</combobox>
-
-
 				<doublebox id="dbMontant" constraint="no empty"
 					placeholder="Montant" />
-
-
 				<button id="btAddPrestation" image="/images/add.png"></button>
 				</hbox>
 				<hbox hflex="1" >

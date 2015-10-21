@@ -53,7 +53,7 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 	@Wire
 	private Doublebox dbMontant, txtMontant;
 	@Wire
-	private Textbox txtObservation,txtNom,txtTelephone;
+	private Textbox txtObservation,txtNom,txtTelephone,chambre;
 	@Wire
 	private Datebox dateEntree,dateSortie;
 	@Wire
@@ -201,6 +201,7 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 		Double mntTTC = totalmontant + 1000 + 200;
 		facture.setMontantTTC(mntTTC);
 		facture.setNbrePers(nbrePersonne.getValue());
+		facture.setNumChambre(chambre.getValue());
 		//facture.setIsDevis(isDevis);
 		//facture.setIsDeleted(false);
 		/*if (solde == 0) {
