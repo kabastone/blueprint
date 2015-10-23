@@ -1,10 +1,12 @@
 package lilas.ejb.session;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 import lilas.ejb.entity.Prestation;
 @Stateless
@@ -21,9 +23,10 @@ private EntityManager em;
 				return em;
 	}
 
-	public Collection<? extends Prestation> findPrestation() {
-		// TODO Auto-generated method stub
-		return null;
+	public List<Prestation> findPrestation() {
+		Query query = null;
+		 query = em.createQuery("From Prestation p");
+		return query.getResultList();
 	}
 
 }

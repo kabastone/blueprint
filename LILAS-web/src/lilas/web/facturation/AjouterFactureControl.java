@@ -1,22 +1,20 @@
 package lilas.web.facturation;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 import lilas.ejb.entity.Facturation;
+import lilas.ejb.entity.Parametre;
 import lilas.ejb.entity.Prestation;
+import lilas.ejb.entity.Remise;
 import lilas.ejb.session.FactureFacade;
+import lilas.ejb.session.ParametreFacade;
 import lilas.ejb.session.PrestationFacade;
 import lilas.web.outils.EJBRegistry;
 import lilas.web.outils.JNDIUtils;
 
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.SelectorComposer;
 import org.zkoss.zk.ui.select.annotation.Listen;
@@ -33,7 +31,7 @@ import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
-import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
 import org.zkoss.zul.Spinner;
 import org.zkoss.zul.Textbox;
 
@@ -55,9 +53,13 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 	@Wire
 	private Textbox txtObservation,txtNom,txtTelephone,chambre;
 	@Wire
-	private Datebox dateEntree,dateSortie;
+	private Doublebox txtTimbre,txtTaxeSejour;
 	@Wire
-	private Spinner nbrePersonne;
+	private Datebox dateEntree,dateSortie,datefacture;
+	@Wire 
+	private Radio rdTVA18,rdTVA10;
+	@Wire
+	private Spinner nbrePersonne,spRemise;
 	Prestation selected = new Prestation();
 	private ListModelList<Prestation> prestationModel = new ListModelList<Prestation>();
 	private ListModelSet<Prestation> comboPrestationModel = new ListModelSet<Prestation>();
@@ -75,11 +77,10 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 	public void doAfterCompose(Component comp) throws Exception {
 		// TODO Auto-generated method stub
 		super.doAfterCompose(comp);
-	
 		
 			comboPrestationModel = new ListModelSet<Prestation>(
 					prestationFacade.findPrestation());
-		
+		            
 		cbPrestation.setModel(comboPrestationModel);
 		lsPrestation.setItemRenderer(new ListitemRenderer<Prestation>() {
 
@@ -109,8 +110,8 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 		lsReglement.setModel(reglementModel);*/
 
 		solde = 0d;
-		llSolde.setValue(solde + "");
-
+		//llSolde.setValue(solde + "");
+        rdTVA10.setChecked(true);
 	}
 
 	@Listen("onSelect=#cbPrestation")
@@ -127,10 +128,20 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 		Prestation prestation = cbPrestation.getSelectedItem().getValue();
 		//prestation.setLibelle(cbPrestation.getSelectedItem().getLabel());
 		//prestation.setPrix(dbMontant.getValue());
+		if(spRemise.getValue() != 0){
+			Remise remise = prestation.getRemise();
+			remise.setPourcentage(spRemise.getValue());
+			prestation.setRemise(remise);
+			totalmontant +=(dbMontant.getValue() * spRemise.getValue())/100;
+		}else{
+			totalmontant += dbMontant.getValue();
+		}
+		
 		((ListModelList<Prestation>) prestationModel).add(prestation);
-		totalmontant += dbMontant.getValue();
-		solde += dbMontant.getValue();
-		llSolde.setValue(solde + "");
+		
+		
+		//solde += dbMontant.getValue();
+		//llSolde.setValue(solde + "");
 	}
 
 	/*@Listen("onClick=#btAddRegl")
@@ -162,7 +173,7 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 		if (prestationModel.isEmpty()) {
 			solde = 0d;
 			totalmontant = 0d;
-			llSolde.setValue(0 + "");
+			//llSolde.setValue(0 + "");
 			//reglementModel.removeAll(reglementModel.getInnerList());
 		}
 
@@ -187,6 +198,7 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 	@Listen("onClick=#btValider")
 	public void valider() {
 		Facturation facture = new Facturation();
+		facture.setDateFacture(datefacture.getValue());
 		facture.setEntree(dateEntree.getValue());
 		// facture.setEtat("Non payée");
 		facture.setSortie(dateSortie.getValue());
@@ -196,12 +208,24 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 		//Set<Reglement> listRgl = new HashSet<Reglement>();
 		//listRgl.addAll(reglementModel.getInnerList());
 		//facture.setReglements(listRgl);
-		facture.setMontantLettre("");
+		facture.setMontantLettre("mille");
 		facture.setModePaie(cbModePaie.getSelectedItem().getLabel());
 		Double mntTTC = totalmontant + 1000 + 200;
 		facture.setMontantTTC(mntTTC);
 		facture.setNbrePers(nbrePersonne.getValue());
 		facture.setNumChambre(chambre.getValue());
+		facture.setClient(txtNom.getValue());
+		facture.setTimbre(txtTimbre.getValue());
+		facture.setTva(rdTVA10.isChecked() ? 10 : 18);
+		facture.setTaxeSejour(txtTaxeSejour.getValue());
+		ParametreFacade pf = (ParametreFacade) JNDIUtils.lookUpEJB(EJBRegistry.ParametreFacade);
+		int[] range = {0,1} ;
+		
+		List<Parametre> pList = pf.findRange(range);
+		Parametre p = pList.get(0);
+		//alert(p.getAdresse());
+		facture.setParam(p);
+		
 		//facture.setIsDevis(isDevis);
 		//facture.setIsDeleted(false);
 		/*if (solde == 0) {
@@ -213,9 +237,10 @@ public class AjouterFactureControl extends SelectorComposer<Component> {
 		facture.setSolde(solde);*/
 		FactureFacade ff = (FactureFacade) JNDIUtils
 				.lookUpEJB(EJBRegistry.FactureFacade);
-		ff.edit(facture);
-		Clients.showNotification("Facture enregistrée");
-		Events.postEvent("onClickToolbar", getSelf().getParent(), facture);
+		//ff.edit(facture);
+		facture = ff.creer(facture);
+		Clients.showNotification("Facture enregistrée ");
+		Events.postEvent("onUpdateFacture", getSelf().getParent(), facture);
 		getSelf().detach();
 
 	}

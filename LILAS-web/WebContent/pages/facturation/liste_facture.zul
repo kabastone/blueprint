@@ -1,22 +1,16 @@
 <?page title="Liste des Factures" contentType="text/html;charset=UTF-8"?>
 <zk>
 	<window title="Liste des Factures" border="normal" height="100%"
-		apply="">
+		apply="lilas.web.facturation.FacturationControl">
 		<borderlayout width="100%" height="100%" id="wind">
 			<north vflex="1">
 				<hbox id="toolbarBtn">
-					<toolbarbutton id="tbReglement" image="/images/view.png"
-						label="Réglement" />
+					<toolbarbutton id="tbAjouter" image="/images/add.png"
+						label="Faire facture" />
 						<toolbarbutton id="tbModifier" image="/images/view.png"
 						label="Modifier" />
 						<toolbarbutton id="tbSupprimer" image="/images/delete.png"
 						label="Supprimer" />
-						<toolbarbutton id="tbFacturePay" image="/images/view.bmp"
-						label="Facture payées" />
-						<toolbarbutton id="tbFactureImpay" image="/images/view.bmp"
-						label="Facture impayées" />
-						<toolbarbutton id="tbDevis" image="/images/view.bmp"
-						label="Devis" />
 				</hbox>
 			</north>
 			<center>
@@ -27,20 +21,23 @@
 					<listbox id="lsFacture" mold="paging" pageSize="10" height="400px">
 						<listhead>
 							<listheader label="N°" />
-							<listheader label="Date" />
-							<listheader label="Nom Patient" />
-							<listheader label="Prénom Patient" />
-							
-							<listheader label="Montant Total" />
+							<listheader label="Client" />
+							<listheader label="Date entrée" />
+							<listheader label="Date sortie" />
+							<listheader label="N° Chambre" />
+							<listheader label="Personne" />
+							<listheader label="Montant" />
 
 						</listhead>
 						<template name="model">
 							<listitem>
 								<listcell label="${each.numFacture }" />
-								<listcell label="${each. dateFacture }" />
-								<listcell label="${each.patient.nomPatient }" />
-								<listcell label="${each.patient.prenomPatient }" />
-								<listcell label="${each.montant }" />
+								<listcell label="${each.client }" />
+								<listcell label="${each.entree }" />
+								<listcell label="${each.sortie }" />
+								<listcell label="${each.numChambre }" />
+								<listcell label="${each.nbrePers }" />
+								<listcell label="${each.montantTTC }" />
 							</listitem>
 						</template>
 

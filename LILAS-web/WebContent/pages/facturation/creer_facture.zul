@@ -1,113 +1,139 @@
 <?page title="Facture" contentType="text/html;charset=UTF-8"?>
 <zk>
-	<window title="Facture" border="normal" closable="true" 
+	<window title="Facture" border="normal" closable="true"
 		apply="lilas.web.facturation.AjouterFactureControl" width="70%">
 		<vbox hflex="1" vflex="1" align="center">
-		<groupbox width="90%">
-			<caption label="Infos Client"></caption>
-			<grid>
-				<columns>
-					<column></column>
-					<column></column>
-				</columns>
-				<rows>
-					<row>
-						Client:
-						<textbox id="txtNom"></textbox>
-					</row>
-					
-					<row>
-						Date d'entrée:
-						<datebox id="dateEntree"></datebox>
-					</row>
-					<row>
-						Date de sortie:
-						<datebox id="dateSortie"></datebox>
-					</row>
-					<row>
-						Tél:
-						<textbox id="txtTelephone"></textbox>
-					</row>
-					<row>
-						Nombre de Personne:
-						<spinner id="nbrePersonne"></spinner>
-					</row>
-					<row>
-						Chambre:
-						<textbox id="chambre"></textbox>
-					</row>
-					
-				</rows>
-			</grid>
-		</groupbox>
-	<hbox>
-		<groupbox >
-			<caption label="Pestation"></caption>
-			
-               <vbox >
-               <hbox >
-               <combobox id="cbPrestation" placeholder="Prestation"
-					constraint="no empty" >
-					<template name="model">
-					<comboitem label="${each.libelle }" value="${each}" />
-					</template>
-				
-				</combobox>
-				<doublebox id="dbMontant" constraint="no empty"
-					placeholder="Montant" />
-				<button id="btAddPrestation" image="/images/add.png"></button>
-				</hbox>
-				<hbox hflex="1" >
-				<listbox id="lsPrestation" height="200px" width="400px" >
-					<listhead>
-						<listheader label="Prestation" />
-						<listheader label="Montant" />
-					</listhead>
-				</listbox>
-				<button id="btSupPrestation" type="submit" image="/images/delete.png" />
-				</hbox>
-               </vbox>
-               </groupbox>
-               <!-- 
-				<vbox>
-				
-				<groupbox hflex="min">
-			<caption label="Réglement" />
-			<hbox align="left"><label>SOLDE</label> <label id="llSolde" sclass="label label-info" /></hbox>
-			
-			<vbox>
+			<groupbox width="90%">
+				<caption label="Infos Client"></caption>
+				Date Facture:
+				<datebox id="datefacture"></datebox>
+				<radiogroup id="tva" />
+				<grid>
+					<columns>
+						<column></column>
+						<column></column>
+					</columns>
+					<rows>
+						<row>
+							Client:
+							<textbox id="txtNom"></textbox>
+						</row>
+
+						<row>
+							Date d'entrée:
+							<datebox id="dateEntree"></datebox>
+						</row>
+						<row>
+							Date de sortie:
+							<datebox id="dateSortie"></datebox>
+						</row>
+						<row>
+							Tél:
+							<textbox id="txtTelephone"></textbox>
+						</row>
+						<row>
+							Nombre de Personne:
+							<spinner id="nbrePersonne"></spinner>
+						</row>
+						<row>
+							Chambre:
+							<textbox id="chambre"></textbox>
+						</row>
+						<row>
+							TVA 10%
+							<radio id="rdTVA10" radiogroup="tva"
+								label="TVA 10%" />
+						</row>
+						<row>
+							TVA 18%
+							<radio id="rdTVA18" radiogroup="tva"
+								label="TVA 18%" />
+						</row>
+						<row>
+							Taxe séjour:
+							<doublebox id="txtTaxeSejour"></doublebox>
+						</row>
+						<row>
+							Timbre:
+							<doublebox id="txtTimbre"></doublebox>
+						</row>
+					</rows>
+				</grid>
+			</groupbox>
 			<hbox>
-				<textbox id="txtObservation" />
-				<datebox placeholder="Date réglement" id="dtReglement" />
-				<doublebox id="txtMontant" placeholder="Montant"/>
-				<button image="/images/add.png" id="btAddRegl" />
-				</hbox>
-				<hbox>
-				<listbox id="lsReglement" width="300px" height="200px">
-				
+				<groupbox>
+					<caption label="Pestation"></caption>
+
+					<vbox>
+						<hbox>
+							<combobox id="cbPrestation"
+								placeholder="Prestation" constraint="no empty">
+								<template name="model">
+									<comboitem label="${each.libelle }"
+										value="${each}" />
+								</template>
+
+							</combobox>
+							<doublebox id="dbMontant"
+								constraint="no empty" placeholder="Montant" />
+							<spinner id="spRemise" placeholder="Remise" value="0"></spinner>
+							<button id="btAddPrestation"
+								image="/images/add.png">
+							</button>
+						</hbox>
+						<hbox hflex="1">
+							<listbox id="lsPrestation" height="200px"
+								width="400px">
+								<listhead>
+									<listheader label="Prestation" />
+									<listheader label="Montant" />
+								</listhead>
+							</listbox>
+							<button id="btSupPrestation" type="submit"
+								image="/images/delete.png" />
+						</hbox>
+					</vbox>
+				</groupbox>
+				<!-- 
+					<vbox>
+					
+					<groupbox hflex="min">
+					<caption label="Réglement" />
+					<hbox align="left"><label>SOLDE</label> <label id="llSolde" sclass="label label-info" /></hbox>
+					
+					<vbox>
+					<hbox>
+					<textbox id="txtObservation" />
+					<datebox placeholder="Date réglement" id="dtReglement" />
+					<doublebox id="txtMontant" placeholder="Montant"/>
+					<button image="/images/add.png" id="btAddRegl" />
+					</hbox>
+					<hbox>
+					<listbox id="lsReglement" width="300px" height="200px">
+					
 					<listhead>
-						<listheader label="Observation" />
-						<listheader label="Date réglement" />
-						<listheader label="Montant" />
+					<listheader label="Observation" />
+					<listheader label="Date réglement" />
+					<listheader label="Montant" />
 					</listhead>
-				</listbox>
-				<button id="btSuppRegl" image="/images/delete.png" />
-				</hbox>
-			</vbox>
-		</groupbox>
-				</vbox>
-				 -->
-		</hbox> 	
-		
-		
-		
-		<combobox id="cbModePaie" placeholder="Mode paiement"
-			constraint="no empty">
-			<comboitem label="Espèces" />
-			<comboitem label="Chèque" />
-			<comboitem label="Crédit" />
-		</combobox>
-		<button id="btValider">Valider</button>
+					</listbox>
+					<button id="btSuppRegl" image="/images/delete.png" />
+					</hbox>
+					</vbox>
+					</groupbox>
+					</vbox>
+				-->
+			</hbox>
+
+
+
+			<combobox id="cbModePaie" placeholder="Mode paiement"
+				constraint="no empty">
+				<comboitem label="Espèces" />
+				<comboitem label="Chèque" />
+				<comboitem label="Crédit" />
+			</combobox>
+			<button id="btValider">Valider</button>
 		</vbox>
 	</window>
 </zk>

@@ -12,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -41,6 +42,9 @@ public class Facturation implements Serializable {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "NUM_FACTURE")
 	private Long numFacture;
+	@Column(name = "DATE_FACTURE")
+	@Temporal(TemporalType.DATE)
+	private Date dateFacture;
 	@Column(name = "CLIENT", nullable = false, length = 255)
 	private String client;
 	@Column(name = "ENTREE", nullable = false)
@@ -53,10 +57,8 @@ public class Facturation implements Serializable {
 	private String numChambre;
 	@Column(name = "NBRE_PERS", nullable = false)
 	private Integer nbrePers;
-	@Column(name = "MONTANT_HT")
-	private Double montantHT;
-	@Column(name = "MONTANT_TVA")
-	private Double montantTVA;
+	@Column(name = "TVA")
+	private int tva;
 	@Column(name = "MONTANT_TTC")
 	private Double montantTTC;
 	@Column(name = "TAXE_SEJOUR")
@@ -69,9 +71,11 @@ public class Facturation implements Serializable {
 	private String modePaie;
 	@Column(name = "TELEPHONE")
 	private String telephone;
-	@ManyToMany(fetch=FetchType.EAGER,cascade=CascadeType.ALL)
+	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	Set<Prestation> prestations;
-	
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Parametre param;
+
 	public String getTelephone() {
 		return telephone;
 	}
@@ -128,22 +132,6 @@ public class Facturation implements Serializable {
 		this.nbrePers = nbrePers;
 	}
 
-	public Double getMontantHT() {
-		return montantHT;
-	}
-
-	public void setMontantHT(Double montantHT) {
-		this.montantHT = montantHT;
-	}
-
-	public Double getMontantTVA() {
-		return montantTVA;
-	}
-
-	public void setMontantTVA(Double montantTVA) {
-		this.montantTVA = montantTVA;
-	}
-
 	public Double getMontantTTC() {
 		return montantTTC;
 	}
@@ -182,6 +170,30 @@ public class Facturation implements Serializable {
 
 	public void setModePaie(String modePaie) {
 		this.modePaie = modePaie;
+	}
+
+	public int getTva() {
+		return tva;
+	}
+
+	public void setTva(int tva) {
+		this.tva = tva;
+	}
+
+	public Date getDateFacture() {
+		return dateFacture;
+	}
+
+	public void setDateFacture(Date dateFacture) {
+		this.dateFacture = dateFacture;
+	}
+
+	public Parametre getParam() {
+		return param;
+	}
+
+	public void setParam(Parametre param) {
+		this.param = param;
 	}
 
 }

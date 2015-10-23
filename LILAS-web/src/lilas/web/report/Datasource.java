@@ -1,4 +1,4 @@
-package lilas.web.facturation;
+package lilas.web.report;
 
 import java.util.List;
 
@@ -24,10 +24,11 @@ public class Datasource implements JRDataSource{
         Prestation prestation = prestations.get(index);
         if ("libelle".equals(fieldName)) {
             return prestation.getLibelle();
-        } else if ("prix".equals(fieldName)) {
+        } else if ("montantPres".equals(fieldName)) {
             return prestation.getMontantPres();
-        } 
-        
+        } else if ("remise".equals(fieldName)) {
+            return prestation.getRemise().getPourcentage();
+        }
         return "";
 	}
 

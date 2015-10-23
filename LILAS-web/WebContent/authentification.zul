@@ -17,7 +17,7 @@
 					width="250px" id="password">
 				</textbox>
 				<label width="250px"></label>
-				<button width="250px" id="login">Connexion</button>
+				<button width="250px" id="login" class="btn">Connexion</button>
 			</vbox>
 			<label id="message" />
 		</groupbox>

@@ -2,7 +2,7 @@
 <zk>
 	<window title="Liste Prestations" closable="true" border="normal"
 		height="100%"
-		apply="">
+		apply="lilas.web.prestation.PrestationControl">
 		<borderlayout height="100%" id="wind">
 			<north vflex="1">
 
@@ -23,11 +23,13 @@
 						<listhead>
 							<listheader label="Libelle" />
 							<listheader label="Montant" />
+							<listheader label="Remise" />
 						</listhead>
 						<template name="model">
 						<listitem>
 							<listcell label="${each.libelle }" />
 							<listcell label="${each.montantPres}" />
+							<listcell label="${each.remise}" />
 						</listitem>
                        </template>
 					</listbox>

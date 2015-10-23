@@ -10,6 +10,7 @@ import lilas.ejb.entity.Prestation;
 import lilas.ejb.session.FactureFacade;
 import lilas.web.outils.EJBRegistry;
 import lilas.web.outils.JNDIUtils;
+import lilas.web.report.Datasource;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
@@ -34,8 +35,7 @@ public class FacturationControl extends SelectorComposer<Component> {
 	 */
 	private static final long serialVersionUID = 1L;
 
-	@Wire
-	private Toolbarbutton tbFacturePay, tbFactureImpay;
+	
 	@Wire
 	private Listbox lsFacture;
 	private ListModelList<Facturation> factureModel = new ListModelList<Facturation>();
@@ -48,9 +48,9 @@ public class FacturationControl extends SelectorComposer<Component> {
 		// TODO Auto-generated method stub
 
 		super.doAfterCompose(comp);
-		factureModel = new ListModelList<Facturation>(ff.listeFactureImpaye());
+		factureModel = new ListModelList<Facturation>(ff.findAll());
 		lsFacture.setModel(factureModel);
-		tbFactureImpay.setDisabled(true);
+		//tbFactureImpay.setDisabled(true);
 		lsFacture.addEventListener("onDoubleClick", new EventListener<Event>() {
 
 			@Override
@@ -73,7 +73,7 @@ public class FacturationControl extends SelectorComposer<Component> {
 	public void afficherFacture(Event data) {
 		String type = "pdf";
 		// Facture ft = lsFacture.getSelectedItem().getValue();
-		String path = "C:\\PROJET\\DEVELOPER\\HealthCareSN-web\\build\\classes\\";
+		String path = "C:\\PROJET\\DEVELOPER\\report\\";
 
 		Window win = (Window) Executions.createComponents(
 				"/pages/facturation/report.zul", null, null);
@@ -83,30 +83,51 @@ public class FacturationControl extends SelectorComposer<Component> {
 		if (ft == null) {
 			ft = (Facturation) data.getData();
 		}
-		params.put("nomClient", ft.getClient());
-		params.put("entree", ft.getEntree());
-		params.put("entree", ft.getSortie());
+		params.put("client", ft.getClient());
+		params.put("nbrPers", ft.getNbrePers()+"");
+		
+		params.put("image", ft.getParam().getLogo());
+		params.put("ninea", ft.getParam().getNinea());
+		params.put("dateFacture", ft.getDateFacture()+"");
+		params.put("dateDeb", ft.getEntree()+"");
+		params.put("dateFin", ft.getSortie()+"");
 		params.put("numFacture", ft.getNumFacture().toString());
-		//params.put("telephone", ft.getPatient().getTelephoneMobile() + "/"
+		params.put("phone", ft.getTelephone());
+		
 				//+ ft.getPatient().getTelephoneFixe());
 		//params.put("adresse", ft.getPatient().getAdresse());
-		params.put("modePaie", ft.getModePaie());
+		//params.put("modePaie", ft.getModePaie());
 		//params.put("solde", ft.getSolde() + "");
 		//String titre = ft.getIsDevis() ? "DEVIS" : "FACTURE";
 		//params.put("facture", titre);
 		Double totalMontant = 0d;
+		Double montantRemise = 0d;
+		
 		for (Prestation p : ft.getPrestations()) {
-			totalMontant += p.getMontantPres();
+			if(p.getRemise().getPourcentage() != 0){
+				montantRemise = (p.getMontantPres() * p.getRemise().getPourcentage()) / 100;
+			}
+			totalMontant += (p.getMontantPres()-montantRemise);
 		}
-		params.put("totalMontant", totalMontant);
-
+		params.put("montantTotal", totalMontant+"");
+		params.put("taxeJour", ft.getTaxeSejour()+"");
+		Double montantTVA = 0d;
+		if(ft.getTva() == 10){
+			montantTVA = totalMontant * 0.1;
+			params.put("tva10", montantTVA+"");
+		}else{
+			montantTVA = totalMontant * 0.18;
+			params.put("tva18", montantTVA);
+		}
+		Double total = totalMontant + montantTVA + ft.getTaxeSejour();
+		params.put("total", total+"");
 		List<Prestation> listesP = new ArrayList<Prestation>();
 
 		listesP.addAll(ft.getPrestations());
 		//List<Reglement> reglements = new ArrayList<Reglement>();
 		//reglements.addAll(ft.getReglements());
 		if (!listesP.isEmpty()) {
-			params.put("prestationDatasource", new Datasource(listesP));
+			params.put("dataSource", new Datasource(listesP));
 		}
 		/*if (!reglements.isEmpty()) {
 			params.put("reglementDatasource", new ReglementDataSource(
@@ -115,7 +136,7 @@ public class FacturationControl extends SelectorComposer<Component> {
 		}*/
 		Jasperreport report = (Jasperreport) win.getFellow("report");
 		report.setType(type);
-		report.setSrc(path + "FactureMaadji.jasper");
+		report.setSrc(path + "factureLilas.jasper");
 		report.setParameters(params);
 	}
 
@@ -147,7 +168,7 @@ public class FacturationControl extends SelectorComposer<Component> {
 			return;
 	}
 
-	@Listen("onClick=#tbFacturePay")
+	/*@Listen("onClick=#tbFacturePay")
 	public void afficherFacturePaye() {
 		tbFactureImpay.setDisabled(false);
 		tbFacturePay.setDisabled(true);
@@ -162,7 +183,7 @@ public class FacturationControl extends SelectorComposer<Component> {
 		factureModel = new ListModelList<Facturation>(ff.listeFactureImpaye());
 		lsFacture.setModel(factureModel);
 	}
-
+*/
 	@Listen("onSoldeFacture=window")
 	public void refreshListeImpaye() {
 		factureModel = new ListModelList<Facturation>(ff.listeFactureImpaye());
@@ -195,8 +216,15 @@ public class FacturationControl extends SelectorComposer<Component> {
 	@Listen("onUpdateFacture=window")
 	public void updateEvent(Event event) {
 		Facturation f = (Facturation) event.getData();
+		/*if(!factureModel.isEmpty()){
 		((ListModelList<Facturation>) factureModel).remove(lsFacture
 				.getSelectedIndex());
+		}*/
 		((ListModelList<Facturation>) factureModel).add(f);
+	}
+	@Listen("onClick=#tbAjouter")
+	public void ajouterFacture(){
+		Window win = (Window) Executions.createComponents("/pages/facturation/creer_facture.zul", getSelf(),null);
+		win.setMode(Mode.MODAL);
 	}
 }
